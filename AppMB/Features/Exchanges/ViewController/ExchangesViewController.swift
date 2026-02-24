@@ -75,7 +75,7 @@ final class ExchangesViewController: UIViewController {
         contentView.onSearch = { [weak self] textField in
             Task { [weak self] in
                 guard let self else { return }
-                await self.viewModel.search(search: textField)
+                self.viewModel.search(search: textField)
             }
         }
 

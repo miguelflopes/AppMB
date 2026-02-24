@@ -14,6 +14,7 @@ final class ExchangesView: UIView {
     private var searchDelay: Timer?
     private let delayStartSearch: TimeInterval = 0.8
     private var isShowingSkeleton = true
+    private let keyboardDismissTap = KeyboardDismissTapComponent()
 
     // MARK: - Public Properties
 
@@ -108,6 +109,7 @@ final class ExchangesView: UIView {
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        tableView.keyboardDismissMode = .onDrag
         tableView.accessibilityIdentifier = "tableView"
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: String(describing: ExchangeTableViewCell.self))
         tableView.register(SkeletonExchangeCell.self, forCellReuseIdentifier: String(describing: SkeletonExchangeCell.self))
@@ -122,6 +124,7 @@ final class ExchangesView: UIView {
         buildHierarchy()
         buildConstraints()
         setupSkeletonDataSource()
+        setupKeyboardDismiss()
     }
 
     @available(*, unavailable)
@@ -191,13 +194,27 @@ final class ExchangesView: UIView {
         tableView.reloadData()
     }
 
+    private func setupKeyboardDismiss() {
+        keyboardDismissTap.install(on: self, ignoring: [searchBar])
+    }
+
     @objc
     private func searchTextFieldDidChange(_ textField: UITextField?) {
         searchDelay?.invalidate()
-        searchDelay = Timer.scheduledTimer(withTimeInterval: delayStartSearch, repeats: false) { _ in
-            guard let text = textField?.text else { return }
-            self.onSearch?(text)
-        }
+        let text = textField?.text ?? ""
+        searchDelay = Timer.scheduledTimer(
+            timeInterval: delayStartSearch,
+            target: self,
+            selector: #selector(handleSearchDelayTimer(_:)),
+            userInfo: text,
+            repeats: false
+        )
+    }
+
+    @objc
+    private func handleSearchDelayTimer(_ timer: Timer) {
+        let text = timer.userInfo as? String ?? ""
+        onSearch?(text)
     }
 }
 
@@ -212,6 +229,7 @@ extension ExchangesView: ExchangesViewProtocol {
         tableView.reloadData()
 
         dataSource.openDetails = { [weak self] exchange in
+            self?.endEditing(true)
             self?.openDetails?(exchange)
         }
     }
@@ -226,7 +244,6 @@ extension ExchangesView: ExchangesViewProtocol {
         guard let dataSource = tableView.dataSource as? ExchangesDataSourceProtocol else { return }
         dataSource.isLoadingMore = isLoading
         
-        // Reload table to show/hide the skeleton cell at the bottom
         tableView.reloadData()
     }
 
