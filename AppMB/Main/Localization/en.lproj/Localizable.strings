@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  AppMB
+
+  Created by Miguel Lopes on 20/02/26.
+
+*/
+
+// Home / Exchanges List
+"title_exchanges" = "Exchanges";
+"placeholder_search" = "Search exchanges...";
+"info_top_exchanges" = "TOP 100 EXCHANGES";
+"info_global_vol" = "📈 GLOBAL VOL: %@";
+"label_launched_cell" = "Launched %@";
+"label_volume_24h" = "Vol (24h)";
+
+// Exchange Details
+"title_exchange_details" = "Exchange Details";
+"title_about" = "About";
+"title_available_assets" = "Available Assets";
+"title_maker_fee" = "Maker Fee";
+"title_taker_fee" = "Taker Fee";
+"title_launched" = "Launched";
+"label_not_available" = "N/A";
+"label_id_prefix" = "ID: #%d";
+"label_active" = "Active";
+"empty_description" = "No description available.";
+
+// Common / Errors
+"label_ok" = "OK";
+"error_title_sorry" = "Sorry";
+"error_load_message" = "Could not load information at the moment. \n Please try again later.";
+"error_search_title" = "Search Error";
+"error_search_message" = "We didn't find any exchanges.";
